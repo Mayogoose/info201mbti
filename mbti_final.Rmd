@@ -1,0 +1,115 @@
+---
+title: "MBTI Data Vis Group Assignment"
+author: "Meiyao Li"
+date: "2023-11-21"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(fmsb)
+  mbtis <- read_delim("../201data/combined_mbti_df.csv")
+
+mbtis %>%
+  group_by(mbti, group = ceiling(row_number() / 30)) %>%
+  summarize(n = mean(valence_mean)) %>%
+  mutate(four_cats = ifelse(str_detect(mbti, "NF"), "NF",
+                            ifelse(str_detect(mbti, "NT"), "NT",
+                                   ifelse(str_detect(mbti, "SF"), "SF",
+                                          ifelse(str_detect(mbti, "ST"), "ST", ""))))) %>%
+  arrange(desc(four_cats)) %>%
+  ggplot(aes(mbti, n, color=mbti)) +
+  geom_point() +
+  labs(x = "mbti", y="mean valence") +
+  scale_color_manual(
+      values = c( ENTJ="#95637e",
+                 ENTP="#95637e",
+                 INTJ="#95637e",
+                 INTP="#95637e",
+                 ENFP="#9ac262",
+                 ENFJ="#9ac262",
+                 INFP="#9ac262",
+                 INFJ="#9ac262",
+                 ESFJ="#72cccd",
+                 ESTJ="#72cccd",
+                 ISFJ="#72cccd",
+                 ISTJ="#72cccd",
+                 ESFP="#e5c727",
+                 ESTP="#e5c727",
+                 ISFP="#e5c727",
+                 ISTP="#e5c727"
+                 )) +
+  theme(axis.text.x = element_text(angle = 45))
+
+
+
+```
+
+```{r}
+library(tidyr)
+subjective <- mbtis %>%
+  group_by(function_pair) %>%
+  summarize(
+    mean_danceability = mean(danceability_mean, na.rm = TRUE),
+    mean_energy = mean(energy_mean, na.rm = TRUE),
+    mean_valence = mean(valence_mean, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = starts_with("mean"), names_to = "attribute", values_to = "mean_value")
+
+subjective
+
+ggplot(subjective, aes(x = function_pair, y = mean_value, fill = function_pair)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  ## stat = "identity" is necessary when you have pre-summarized data
+  facet_wrap(~ attribute, scales = "free_y")+
+  # ~ specify the variable that will be used to create the facet
+  # "free_y" specify that the y-axes for each facet should have independent scale
+  labs(title = "Mean Subjective Music Attributes by MBTI Functioning Pair", 
+       x = "subjective measurement", 
+       y = "Mean Attribute Value") +
+  theme(axis.text.x=element_blank())  +
+    scale_fill_manual(
+      values = c(NF="#9ac262",
+                 NT="#95637e",
+                 SP="#e5c727",
+                 SJ="#72cccd")) +
+  coord_cartesian(ylim =c(0.4, 0.7))
+```
+
+```{r}
+mbtis_means <- mbtis %>%
+  group_by(mbti) %>%
+  summarise(Danceability = mean(danceability_mean, na.rm = TRUE),
+            Energy = mean(energy_mean, na.rm = TRUE),
+            Valence = mean(valence_mean, na.rm = TRUE),
+            Instrumentalness = mean(instrumentalness_mean, na.rm = TRUE),
+            Loudness = mean(loudness_mean, na.rm = TRUE),
+            Tempo = mean(tempo_mean, na.rm = TRUE))
+
+mbti_colors <- c(ENFP="#9ac262", ENFJ="#9ac262", ENTJ="#95637e", ENTP="#95637e", 
+                 ESFP="#e5c727", ESFJ="#72cccd", ESTP="#e5c727", ESTJ="#72cccd", 
+                 INFP="#9ac262", INFJ="#9ac262", INTJ="#95637e", INTP="#95637e", 
+                 ISFP="#e5c727", ISFJ="#72cccd", ISTP="#e5c727", ISTJ="#72cccd")
+
+attributes <- names(mbtis_means)[-1]
+min_values <- sapply(mbtis_means[attributes], min)
+names(min_values) <- attributes
+max_values <- sapply(mbtis_means[attributes], max)
+names(max_values) <- attributes
+
+for(mbti_type in unique(mbtis$mbti)){
+  mbti_data <- mbtis_means %>% filter(mbti == mbti_type)
+  radar_data <- rbind(Max = max_values, Min = min_values, mbti_data[-1])
+  type_color <- mbti_colors[mbti_type]
+  fill_color <- adjustcolor(type_color, alpha.f = 0.3)
+  radarchart(radar_data, 
+            pcol=type_color, 
+            pfcol=fill_color, 
+            plwd = 2, 
+            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8, 
+            title=mbti_type,
+            vlcex=0.8)
+}
+
+```
+
