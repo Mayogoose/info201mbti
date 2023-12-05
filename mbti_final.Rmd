@@ -1,14 +1,14 @@
 ---
-title: "MBTI Data Vis Group Assignment"
-author: "Meiyao Li"
-date: "2023-11-21"
+title: "MBTI Data Visualization Group Assignment"
+author: "Meiyao Li, Amelia Li, Marco Guo, Tianhui Zhou"
+date: "2023-12-05"
 output: html_document
 ---
 
 ```{r}
 library(tidyverse)
 library(fmsb)
-  mbtis <- read_delim("../201data/combined_mbti_df.csv")
+  mbtis <- read_delim("combined_mbti_df.csv")
 
 mbtis %>%
   group_by(mbti, group = ceiling(row_number() / 30)) %>%
@@ -20,7 +20,9 @@ mbtis %>%
   arrange(desc(four_cats)) %>%
   ggplot(aes(mbti, n, color=mbti)) +
   geom_point() +
-  labs(x = "mbti", y="mean valence") +
+  labs(x = "Mbti type", y="Mean valence",
+       title="16 mbti personalities and mean valence of music",
+       color="Mbti type, colored by function pairs") +
   scale_color_manual(
       values = c( ENTJ="#95637e",
                  ENTP="#95637e",
@@ -65,8 +67,9 @@ ggplot(subjective, aes(x = function_pair, y = mean_value, fill = function_pair))
   # ~ specify the variable that will be used to create the facet
   # "free_y" specify that the y-axes for each facet should have independent scale
   labs(title = "Mean Subjective Music Attributes by MBTI Functioning Pair", 
-       x = "subjective measurement", 
-       y = "Mean Attribute Value") +
+       x = "Subjective measurement", 
+       y = "Mean attribute value",
+       fill="Function pairs") +
   theme(axis.text.x=element_blank())  +
     scale_fill_manual(
       values = c(NF="#9ac262",
