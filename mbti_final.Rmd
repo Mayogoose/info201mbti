@@ -79,6 +79,7 @@ ggplot(subjective, aes(x = function_pair, y = mean_value, fill = function_pair))
   coord_cartesian(ylim =c(0.4, 0.7))
 ```
 
+
 ```{r}
 mbtis_means <- mbtis %>%
   group_by(mbti) %>%
@@ -175,14 +176,16 @@ server <- function(input, output) {
   
   output$radar_chart <- renderUI({
     
+    mbti_data <- mbtis_means %>% filter(mbti == input$my_button)
+    
     attributes <- names(mbti_data)[-1]
     min_values <- sapply(mbti_data[attributes], min)
     names(min_values) <- attributes
     max_values <- sapply(mbti_data[attributes], max)
     names(max_values) <- attributes
     
-    mbti_data <- mbtis_means %>% filter(mbti == input$my_button)
     radar_data <- rbind(Max = max_values, Min = min_values, mbti_data[-1])
+
     type_color <- mbti_colors[input$my_button]
     fill_color <- adjustcolor(type_color, alpha.f = 0.3)
     
@@ -191,7 +194,7 @@ server <- function(input, output) {
                 pfcol=fill_color, 
                 plwd = 2, 
                 cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,20,5), cglwd=0.8, 
-                title=mbti_type,
+                title = input$my_button,
                 vlcex=0.8)
     
   })
@@ -216,6 +219,121 @@ ui <- fluidPage(
 
 shinyApp(ui, server)
 
+
+```
+
+
+combine buttons & radar chart (that works)
+
+```{r}
+
+library(shiny)
+
+mbti_images <- c(
+  "INTJ" = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQi2VRFrPrpaSQSu8P9KpMiuZUbEjAMYzpyNdgZLsng2Q&s",
+      
+  "INTP" = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlOUv5i5v8mqz19m7xV7ZD5WPwT3wm3SgV-lmatt4Y-w&s",
+      
+  "ENTJ" = "https://www.16personalities.com/static/images/personality-types/avatars/entj-commander.png",
+      
+  "ENTP" = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyWr3zzuitEGEJa1vq0PK_Rsdwuc_z-3IW5rJsT74NKg&s",
+      
+  "INFJ" = "https://www.16personalities.com/static/images/personality-types/avatars/infj-advocate.svg?v=3",
+      
+  "INFP" = "https://www.16personalities.com/static/images/personality-types/avatars/infp-mediator.png",
+      
+  "ENFJ" = "https://www.16personalities.com/static/images/personality-types/avatars/enfj-protagonist.png",
+      
+  "ENFP" = "https://www.16personalities.com/static/images/personality-types/avatars/enfp-campaigner.svg?v=3",
+      
+  "ISTJ" = "https://www.16personalities.com/static/images/personality-types/avatars/istj-logistician.png",
+      
+  "ISFJ" = "https://www.16personalities.com/static/images/personality-types/avatars/isfj-defender.png",
+      
+  "ESTJ" = "https://www.16personalities.com/static/images/personality-types/avatars/estj-executive.png",
+      
+  "ESFJ" = "https://www.16personalities.com/static/images/personality-types/avatars/esfj-consul.png", 
+      
+  "ISTP" = "https://www.16personalities.com/static/images/personality-types/avatars/istp-virtuoso.png",
+      
+  "ISFP" = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-_cAGZD35zF-jIvqaP_ZROUgP8PyYINJlJdEqAIVWvA&s",
+     
+  "ESTP" = "https://www.16personalities.com/static/images/personality-types/avatars/estp-entrepreneur.png",
+      
+  "ESFP" = "https://static.neris-assets.com/images/personality-types/avatars/esfp-entertainer.png"
+)
+
+mbti_name <- c(
+      "INTJ" = "Architect",
+      "INTP" = "Logician",
+      "ENTJ" = "Commander",
+      "ENTP" = "Debater",
+      "INFJ" = "Advocate",
+      "INFP" = "Mediator",
+      "ENFJ" = "Protagonist",
+      "ENFP" = "Campaigner",
+      "ISTJ" = "Logistician",
+      "ISFJ" = "Defender",
+      "ESTJ" = "Executive",
+      "ESFJ" = "Consul",
+      "ISTP" = "Virtuoso",
+      "ISFP" = "Adventurer",
+      "ESTP" = "Entrepreneur",
+      "ESFP" = "Entertainer"
+)
+
+ui <- fluidPage(
+  titlePanel("MBTI Radar Charts"),
+
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("selectedMBTI", "Choose MBTI Type:", 
+                  choices = unique(mbtis$mbti))
+    ),
+    mainPanel(
+      uiOutput("mbtiImage"),
+      textOutput("mbtiName"),
+      plotOutput("radarChart")
+    )
+  )
+)
+
+server <- function(input, output) {
+  
+  output$radarChart <- renderPlot({
+    mbti_type <- input$selectedMBTI
+    mbti_data <- mbtis_means %>% filter(mbti == mbti_type)
+    radar_data <- rbind(Max = max_values, Min = min_values, mbti_data[-1])
+    type_color <- mbti_colors[mbti_type]
+    fill_color <- adjustcolor(type_color, alpha.f = 0.3)
+
+    radarchart(radar_data, 
+               pcol = type_color, 
+               pfcol = fill_color, 
+               plwd = 2, 
+               cglcol = "grey", cglty = 1, axislabcol = "grey", caxislabels = seq(0, 20, 5), cglwd = 0.8, 
+               title = mbti_type,
+               vlcex = 0.8)
+  })
+  
+   output$mbtiImage <- renderUI({
+    selected_mbti <- input$selectedMBTI
+    img_url <- mbti_images[selected_mbti]
+    if (!is.null(img_url)) {
+      tags$img(src = img_url, alt = selected_mbti, width = "40%")
+    }
+  })
+   
+    output$mbtiName <- renderText({
+    selected_mbti <- input$selectedMBTI
+    desc <- mbti_name[selected_mbti]
+    if (!is.null(desc)) {
+      paste(selected_mbti, ":", desc)
+    }
+  })
+}
+
+shinyApp(ui, server)
 
 ```
 
