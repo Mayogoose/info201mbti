@@ -1,4 +1,6 @@
 # info201mbti
+Group members: Amelia Li, Tianhui Zhou, Jiawei guo, Meiyao Li
+
 This project explores a broad correlation and pattern between mbti personality types and their music tastes, measured with the mean of music metadata. 
 
 Our audience are teenagers and young adults who are familiar with the MBTI personality classification. We hope that our result can help people explore themselves better, discovering new communities and new worlds of music that others who have some resemblance to their view of the world enjoy, or celebrate the idiosyncrasies of each individual’s music tastes. This self-discovery opens new ways of looking at the music one listens to to help identify a new sort of identity. There is a lot to learn from reading our report about the relations between MBTI type (the way they view and interact with the world) and music taste, as we found there are indeed different preferences for music for different MBTI types.

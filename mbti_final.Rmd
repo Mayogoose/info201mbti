@@ -5,6 +5,60 @@ date: "2023-11-21"
 output: html_document
 runtime: shiny
 ---
+# Introduction
+
+## Motivations
+If you are a Millennial or a Gen Z on social media during the first week of December, you might see your friends reposting their Spotify Wrapped all over social media. Spotify Wrapped lets users share the 5 artists/songs a user has listened to the most and their favorite music genres. Similarly, mbti has become popular among young adults. We start to wonder if people with a certain mbti personality type would have a certain kinds of Spotify Wrapped.
+
+## Context: What is MBTI?
+MBTI stands for Myers-Briggs Type Indicator, developed by Katharine Cook Briggs and Isabel Briggs Myers in the 1940s based on the psychological theories of Carl Jung. The idea behind MBTI is that individuals can be categorized into 16 distinct personality types based on four basic preferences: extraversion (E) vs. introversion (I), sensing (S) vs. intuition (N), thinking (T) vs. feeling (F), and judging (J) vs. perceiving (P). 
+
+### 16 Personality Types
+- Extraversion (E) vs. introversion (I) measure whether a person gains more energy by being in the company of other people or alone. 
+- Sensing (S) vs. intuition (I) measures whether a person relies on their past experiences to interpret their world now, or if they rely on gut feeling to interpret the world. 
+- Thinking (T) vs. feeling (F) measures whether a person values logic or emotions when they are in the need of making any decisions or in any other context. 
+- Judging (J) vs. perceiving (P) is the extent to which an individual plans ahead or needs a structured plan; judging types tend to need a more formal and solidified expectation to their tasks ahead, while perceiving types are more likely to be comfortable with a rough outline and approach things as they come. Not only are these tendencies and values expressed in personal decision-making processes, it can be seen in an individual’s worldview and their mindset, affecting how they perceive the world and how they approach other people’s situations too. 
+All combinations of these four facets come out to a total of 16 personalities in the form of four letters, such as ENFP. 
+
+### 4 Functioning Pairs
+There are also broader categories, namely, the four function pairs: NF, NT, SJ, SP. These are paired to look at personalities from a broader sense due to their tendencies to be more similar to each other. It is notable that they do not pair the same two facets; intuition (N) pairs are paired with whether they lean towards thinking (T) or feeling (F), while sensing (S) pairs are paired with whether they lean towards judging (J) or perceiving (P). This is due to the nature of N versus S and how the combinations work; for example, it is broadly assumed that an INFP individual and an INFJ individual can be very hard to tell apart due to the nature of the combination of N and F or N and T forming a more distinctly different personality type than say an N and J combination. For sensing (S) types, this is not the case, and instead an ESFJ and ESFP will be more different than an ESFJ and ESTJ. 
+
+### Why is this interesting?
+This is a fascinating topic to us because the human mind is a very complex system that makes fully understanding ourselves and others something both seemingly reachable yet unthinkable. From an outsider’s perspective, it feels incredible that philosophers such as Carl Jung were able to pull out several distinct essences and devise explanations for our complicated human beings. It is a means for the general public to be able to somewhat catch a glimpse into a potential deeper grasp of who they are, something that many people seek in the modern world where self-discovery has slowly become an important desire in life. Though many people have now been exposed to the idea of the 16 personalities in MBTI, the original philosophy is actually a very convoluted model that captures a lot more of the nuance to Jung’s theory, ranging from developmental changes and predictions in facets of the personality morphing throughout life to shadow personalities and hidden masks and personas. The MBTI is a lot more simplistic in the way that it is able to provide non-fanatics some of the rudimentary ideas of Jung’s philosophy to suit their own needs, carrying a lingerance of accuracy and reliability in giving people a glimpse of their inner personality and mindset. Through the MBTI test, people can read up on who they are more likely to be compatible with and create deeper bonds with others by examining what the websites propose their personalities are like.
+Much like the MBTI, music taste is a very nuanced interest for people. Using metadata about songs on Spotify, the metadata on aspects of music such as valence can be a way to describe the happiness expression extent of the music. It is a multidimensional approach to classifying music and therefore in a way the people who enjoy listening to that music. Understanding music taste is understanding yet another crucial dimension to a person. The role that music plays for an individual and what the story of the music they listen to is inherently shaped by who they are, their own stories, their preferences, and what they feel connected to.
+Thus, we planned to draw correlations and find patterns between people’s mbti personality type and their music taste, measured by the mean values of all music metadata of their playlists. Then, using music metadata (danceability, energy, loudness, speechiness, acousticness, liveliness, valence, tempo, instrumentalness), we can find specific songs from “Spotify’s trending music 2023” music library to recommend to our audience some songs based on their inputting their MBTI.
+
+# Questions
+1. Is there a correlation between musical positiveness (valence) and people's MBTI types? In other words, do certain MBTI types generally like to listen to happier or sadder songs, and are there any patterns in relation to any of the facets?
+
+2. Do different functioning pairs (NF, NT, SJ, SP) correlate with intangible/feeling music taste (dancebility, energy, valence) and tangibe/factual music taste (acousticness, tempo, duration, instrumentalness)? For this question it is our attempt to see if there are any other factors of music that can reveal and relate a lot to one’s personality type.
+
+3. what are the music preferences of each personality type in 6 dimensions of measure? In other words, is there a repeatable pattern between MBTI and music taste, enough that a preference can be seen and predicted in a person’s music taste and so that recommendations can be made to them knowing their MBTI?
+
+4. What might be each of the 16 personality type's top three favorite songs and artists now (2023)? Here we attempted to find a more specific storyline in identifying what popular songs right now may most appeal to each personality type (have a better chance of appearing on their Spotify Wrapped). This could even work both ways in that the way it may appeal to a personality type will also increase its popularity.
+
+
+# Data
+## Origins of dataset
+Both datasets are from Kaggle, an online repository that allows users to share models and datasets for the community to non-commercial use. The first dataset was updated a year ago, and the second updated two months ago. These datasets were retrieved using reliable techniques such as scraping the Spotify API and computational methods that will minimize human input error, giving it good integrity for our purposes. 
+
+### (1) mbti x spotify dataset
+The first dataset we are using is [mbti-spotify-dataset](https://www.kaggle.com/datasets/xtrnglc/spotify-mbti-playlists) by Trung Le. This combined dataset contains 4081 rows and 49 columns of data. Each row is an observation of aggregated mean music metadata for a Spotify playlist. The data is crowd sourced by Spotify users, manifested as playlists names that include self-identified mbti types. While the data set is reasonable and integral, it is susceptible to biases rooted in the expressiveness of each personality type. The data set also has errors such as marking a playlist named “esty, entj, intj, istj, istp” as ISTJ, which can possibly undermine or deviate the pattern we find.
+
+### (2) Most Streamed Songs on Spotify in 2023 dataset
+The second dataset we are using is [Most Streamed Songs on Spotify in 2023](https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023) collected by Nidula Elgiriyewithana on Kaggle. This dataset contains 943 rows and 24 columns of data. Each row is a song with spotify metadata, such as artist name, released date, and audio quality measurements. The dataset has some encoding errors, as manifested by ï¿½. We need to manually filter out songs that include garbled code to prevent its presence in our recommended songs for part 4.
+ 
+## Why these datasets?
+We want to use the pattern found in the first data set to find real songs from the second data set. The goal is to visualize the mean music metadata and possibly have people with different personality types to confirm our results
+
+## Our final dataset
+
+marco
+
+
+# Methods
+
+# Results
 
 ```{r}
 library(tidyverse)
@@ -341,3 +395,7 @@ shinyApp(ui, server)
 
 ```
 
+
+# Findings
+
+# Summary

@@ -1,0 +1,13 @@
+---
+title: "Data Documentation"
+author: "Amelia Li, Tianhui Zhou, Jiawei guo, Meiyao Li"
+date: "2023-12-06"
+output: html_document
+---
+
+## Original data sources
+The first dataset we are using is [mbti-spotify-dataset](https://www.kaggle.com/datasets/xtrnglc/spotify-mbti-playlists) by Trung Le. This combined dataset contains 4081 rows and 49 columns of data. Each row is an observation of aggregated mean music metadata for a Spotify playlist. The data is crowd sourced by Spotify users, manifested as playlists names that include self-identified mbti types. While the data set is reasonable and integral, it is susceptible to biases rooted in the expressiveness of each personality type. The data set also has errors such as marking a playlist named “esty, entj, intj, istj, istp” as ISTJ, which can possibly undermine or deviate the pattern we find.
+
+The second dataset we are using is [Most Streamed Songs on Spotify in 2023](https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023) collected by Nidula Elgiriyewithana on Kaggle. This dataset contains 943 rows and 24 columns of data. Each row is a song with spotify metadata, such as artist name, released date, and audio quality measurements. The dataset has some encoding errors, as manifested by ï¿½. We need to manually filter out songs that include garbled code to prevent its presence in our recommended songs for part 4.
+ 
+Both datasets are from Kaggle, an online repository that allows users to share models and datasets for the community to non-commercial use. The first dataset was updated a year ago, and the second updated two months ago. These datasets were retrieved using reliable techniques such as scraping the Spotify API and computational methods that will minimize human input error, giving it good integrity for our purposes. 
