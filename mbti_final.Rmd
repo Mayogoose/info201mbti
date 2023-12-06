@@ -11,7 +11,11 @@ library(tidyverse)
 #library(fmsb)
 #  mbtis <- read_delim("../201data/combined_mbti_df.csv")
 library(fmsb)
+<<<<<<< Updated upstream
   mbtis <- read_delim("/Users/amelia/Github/info201mbti/combined_mbti_df.csv")
+=======
+    mbtis <- read_delim("../info201mbti/combined_mbti_df.csv")
+>>>>>>> Stashed changes
 
 mbtis %>%
   group_by(mbti, group = ceiling(row_number() / 30)) %>%
