@@ -37,7 +37,8 @@ Thus, we planned to draw correlations and find patterns between people’s mbti 
 # Data Explaination
 
 ## Load Original Dataset
-```{r warning = FALSE, echo = FALSE}
+```{r warning = FALSE, echo = FALSE, message=FALSE}
+
 library(stringr)
 library(tidyverse)
 library(fmsb)
