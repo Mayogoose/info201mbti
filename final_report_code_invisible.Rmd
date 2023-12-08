@@ -37,7 +37,7 @@ Thus, we planned to draw correlations and find patterns between people’s mbti 
 # Data Explaination
 
 ## Load Original Dataset
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 library(stringr)
 library(tidyverse)
 library(fmsb)
@@ -65,7 +65,7 @@ The spotify data doesn’t look good. The first two columns are song names and a
 ## Data cleaning
 We selected variables we want as we mentioned above. We also added a column about common names for mbti which is used for shiny app. We renamed the variable so that it's more clear and easy to manipulate.
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 mbti_name <- c(
       "INTJ" = "Architect",
       "INTP" = "Logician",
@@ -103,7 +103,7 @@ We checked if the dataset has invalid or unreasonable data.
 The first three column should be consists of characters only and the rest should consist of numbers only. Based on how data was collected, the max and min value of each music attributes should be in range 0 - 1. So we checked the range to make sure there are no invalid data.
 
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 chr_col <- sapply(mbtis[, 1:3], function(x) any(sapply(x, is.numeric)))
 
 contains_characters <- sapply(mbtis[, -c(1:3)], function(x) any(sapply(x, is.character)))
@@ -122,7 +122,7 @@ list(
 
 We selected variables we want (mentioned above) and renamed them.
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 spo <- spo %>% 
     select(
     track_name, 
@@ -184,7 +184,7 @@ spo <- spo %>%
 ```
 
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 write_csv(mbtis, "mbtis_cleaned.csv")
 write_csv(spo, "spotify_cleaned.csv")
 ```
@@ -199,7 +199,7 @@ Each row in the artist recommendation dataset represents the possible favorite a
 
 ### Question 1: Do certain MBTI types generally like to listen to happier or sadder songs?
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 
 scatter_mbtis <- mbtis %>%
   group_by(mbti, group = ceiling(row_number() / 30)) %>%
@@ -216,7 +216,7 @@ head(scatter_mbtis)
 In the first graph we visualized their preferred musical valence values. To enhance the visual appeal of the dot plot, we employed the ceiling(row_number()) function to selectively sample data points, not overwhelming the graph with excessive data. Then we calculated the mean valence values of the respective MBTI types from the dataframe. We further organized the data based on their functioning pairs, augmenting the dataframe with an additional column specifying the functional pair names. We then color-coded the graph for each MBTI accordingly, adding more visually informative representation in the dot plot.
 
 ### Question 2: Are functioning pairs an influencing factor?
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 subjective <- mbtis %>%
   group_by(function_pair) %>%
   summarize(
@@ -234,7 +234,7 @@ head(subjective)
 We grouped data by function pairs and find out the mean values of subjective music arributes danceability, energy, and valence. We make these columns in longer format, and make these attributes into single column `attributes`. Then, we use ggplot to plot the graph. While plotting we made customize graph by using stat = "identity", position = "dodge" to make bars next to each other. We used facet_wrap(~ attribute, scales = "free_y") to create seperate plots for each attribute. and scale_fill_manual() to fit costomized color based on the color representation of mbti
 
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 objective <- mbtis %>%
   group_by(function_pair) %>%
   summarize(
@@ -253,7 +253,7 @@ Then we did the same thing for objective music attributes speechiness, acousticn
 
 ### Question 3: Radar Chart
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 mbtis_means <- mbtis %>%
   group_by(mbti) %>%
   summarise(Danceability = mean(danceability, na.rm = TRUE),
@@ -281,7 +281,7 @@ For the radar chart we calculated the mean values for specific musical attribute
 
 ### Question 4: So... Spotify Wrapped?
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 # Prepare MBTI data
 scale_to_percentage <- function(x) {
   (x - min(x)) / (max(x) - min(x)) * 100
@@ -334,7 +334,7 @@ The implementation is the same as the one above to provide recommend song.
 
 ### Question 1: Do certain MBTI types generally like to listen to happier or sadder songs?
 
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 scatter_mbtis %>%
   ggplot(aes(mbti, n, color=mbti)) +
   geom_point() +
@@ -369,7 +369,7 @@ Valence is a measure from 0.0 to 1.0 describing the musical positiveness conveye
 
 
 ### Question 2: Are functioning pairs an influencing factor?
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 
 ggplot(subjective, aes(x = function_pair, y = mean_value, fill = function_pair)) +
   geom_bar(stat = "identity", position = "dodge") +
@@ -403,7 +403,7 @@ First, looking at the mean valence again on the graph on the right, we see that 
 
 
 ### Question 3: music preferences of each personality type
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 
 for(mbti_type in unique(mbtis$mbti)){
   mbti_data <- mbtis_means %>% filter(mbti == mbti_type)
@@ -428,7 +428,7 @@ Here there is a distinct pattern of introverted (I) types being characterized by
 ### Question 4: So... Spotify Wrapped?
 
 Song Recommender:
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 calculate_best_fit <- function(mbti_row) {
   min_score <- Inf
   best_song <- NA
@@ -470,7 +470,7 @@ write_csv(merged_data, "Q3.csv")
 ```
 
 Artist Recommender:
-```{r echo = FALSE}
+```{r warning = FALSE, echo = FALSE}
 calculate_best_fit <- function(mbti_row) {
   min_score <- Inf
   best_song <- NA
